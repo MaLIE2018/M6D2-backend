@@ -29,13 +29,12 @@ async (req, res, next) => {
     // let blogPosts = await getItemsExceptOneWithIdFromFile(filePath, req.params.id)
     // let blogPost = await getItemsFromFile(filePath, req.params.id)
     // let newFileName = `${req.params.id}${extname(req.file.originalname)}`
-    // blogPost[0].author.avatar = req.file.path
     // blogPosts.push(blogPost[0])
     // await writeItems(filePath, blogPosts)
     // await writeImage(`authors/${newFileName}`, req.file.buffer)
     const blogPost = await blogModel.findById(req.params.id)
     // let newFileName = `${req.params.id}${extname(req.file.originalname)}`
-    blogPost.cover = req.file.path
+    blogPost.author.avatar = req.file.path
     await blogModel.findByIdAndUpdate(req.params.id, blogPost,{runValidators: true, new:true})
     res.status(200).send()
   } catch (error) {

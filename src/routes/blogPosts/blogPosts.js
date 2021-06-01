@@ -9,8 +9,10 @@ import fs from "fs-extra"
 import mongoose from "mongoose"
 import blogModel from "../../methods/schemas/schema.js"
 const bpRouter = express.Router();
-
+import {v2 as cloudinary} from "cloudinary"
 const filePath = getFilePath("blogPosts.json")
+import {basename,extname} from "path"
+
 
 bpRouter.get("/", async (req, res, next) =>{  
       try { 
@@ -114,6 +116,12 @@ bpRouter.delete("/:id", async (req, res, next) =>{
   try {
     const blogPost = await blogModel.findByIdAndDelete(req.params.id)
     if(blogPost){
+      const publicid_cover = basename(blogPost.cover, extname(blogPost.cover))
+      const publicid_avatar = basename(blogPost.author.avatar, extname(blogPost.author.avatar))
+      await cloudinary.uploader.destroy( publicid_avatar, function(error,result) {
+        console.log(result, error) })
+      await cloudinary.uploader.destroy(publicid_cover,  function(error,result) {
+        console.log(result, error) })
       res.status(204).send()
     } else {
       next(createError(404, {message:`The blogPost with ${req.params.id} is not found`}))
