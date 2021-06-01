@@ -5,7 +5,8 @@ import {extname} from "path"
 import {v2 as cloudinary} from "cloudinary"
 import {CloudinaryStorage} from "multer-storage-cloudinary"
 import { generatePDFStream } from './pdf.js';
-
+import mongoose from "mongoose"
+import blogModel from "./schemas/schema.js"
 
 
 const fRouter = express.Router()
@@ -25,14 +26,18 @@ fRouter.post("/:id/uploadAvatar",multer ({storage: cloudinaryStorage }).single("
 async (req, res, next) => {
   try {
    
-    let blogPosts = await getItemsExceptOneWithIdFromFile(filePath, req.params.id)
-    let blogPost = await getItemsFromFile(filePath, req.params.id)
-    let newFileName = `${req.params.id}${extname(req.file.originalname)}`
-    blogPost[0].author.avatar = req.file.path
-    blogPosts.push(blogPost[0])
-    await writeItems(filePath, blogPosts)
+    // let blogPosts = await getItemsExceptOneWithIdFromFile(filePath, req.params.id)
+    // let blogPost = await getItemsFromFile(filePath, req.params.id)
+    // let newFileName = `${req.params.id}${extname(req.file.originalname)}`
+    // blogPost[0].author.avatar = req.file.path
+    // blogPosts.push(blogPost[0])
+    // await writeItems(filePath, blogPosts)
     // await writeImage(`authors/${newFileName}`, req.file.buffer)
-    res.status(200).send({"upload":"ok"})
+    const blogPost = await blogModel.findById(req.params.id)
+    // let newFileName = `${req.params.id}${extname(req.file.originalname)}`
+    blogPost.cover = req.file.path
+    await blogModel.findByIdAndUpdate(req.params.id, blogPost,{runValidators: true, new:true})
+    res.status(200).send()
   } catch (error) {
     console.log(error)
     next(error)
@@ -45,14 +50,16 @@ fRouter.post("/:id/uploadCover",multer ({storage: cloudinaryStorage }).single("b
 async (req, res, next) => {
   try {
  
-    let blogPosts = await getItemsExceptOneWithIdFromFile(filePath, req.params.id)
-    let blogPost = await getItemsFromFile(filePath, req.params.id)
-    let newFileName = `${req.params.id}${extname(req.file.originalname)}`
-    blogPost[0].cover = req.file.path
-    blogPosts.push(blogPost[0])
-    await writeItems(filePath, blogPosts)
+    // let blogPosts = await getItemsExceptOneWithIdFromFile(filePath, req.params.id)
+    // let blogPost = await getItemsFromFile(filePath, req.params.id)
+    const blogPost = await blogModel.findById(req.params.id)
+    // let newFileName = `${req.params.id}${extname(req.file.originalname)}`
+    blogPost.cover = req.file.path
+    await blogModel.findByIdAndUpdate(req.params.id, blogPost,{runValidators: true, new:true})
+    // blogPosts.push(blogPost)
+    // await writeItems(filePath, blogPosts)
     //await writeImage(`blogPosts/${req.params.id}${extname(req.file.originalname)}`, req.file.buffer)
-    res.status(200).send({"upload":"ok"})
+    res.status(204).send()
     
   } catch (error) {
     console.log(error)
@@ -64,9 +71,10 @@ async (req, res, next) => {
 fRouter.get("/:id/PDFDownload", async (req, res, next) => {
   try {
     res.setHeader("Content-Type", "application/json")
-    let blogPosts = await getItems(filePath)
-    let reqPost = blogPosts.filter(a => a._id === req.params.id)
-    const stream = await generatePDFStream(reqPost)
+    // let blogPosts = await getItems(filePath)
+    // let reqPost = blogPosts.filter(a => a._id === req.params.id)
+    const blogPost = await blogModel.findById(req.params.id)
+    const stream = await generatePDFStream(blogPost)
     stream.pipe(res)
     stream.end()
   } catch (error) {
