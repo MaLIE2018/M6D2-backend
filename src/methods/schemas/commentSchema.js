@@ -6,7 +6,7 @@ const {Schema, model } =mongoose
 const commentSchema = new Schema({
   text: {type: String, required: true},
   user: {type: String, required: true},
-  postId: {type: String, default:""},
+  postId: {type: Schema.Types.ObjectId, ref:'blogposts'},
 }, {timestamps:true})
 
 

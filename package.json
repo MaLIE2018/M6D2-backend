@@ -30,6 +30,7 @@
     "node-fetch": "^2.6.1",
     "pdfmake": "^0.1.71",
     "query-string": "^7.0.0",
+    "query-to-mongo": "^0.10.1",
     "validator": "^13.6.0"
   },
   "devDependencies": {
