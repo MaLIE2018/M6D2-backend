@@ -6,7 +6,6 @@ import { Transform } from 'json2csv';
 import {createFileStream} from "../methods/csv.js"
 import Authors from "../methods/schemas/authorSchema.js"
 
-
 const ARouter = express.Router();
 const filePath = getFilePath('authors.json')
 
