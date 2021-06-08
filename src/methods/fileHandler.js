@@ -6,7 +6,7 @@ import {v2 as cloudinary} from "cloudinary"
 import {CloudinaryStorage} from "multer-storage-cloudinary"
 import { generatePDFStream } from './pdf.js';
 import mongoose from "mongoose"
-import blogModel from "./schemas/schema.js"
+import blogModel from "./schemas/blogPostSchema.js"
 
 
 const fRouter = express.Router()
@@ -25,15 +25,7 @@ params: {
 fRouter.post("/:id/uploadAvatar",multer ({storage: cloudinaryStorage }).single("authorAvatar"), 
 async (req, res, next) => {
   try {
-   
-    // let blogPosts = await getItemsExceptOneWithIdFromFile(filePath, req.params.id)
-    // let blogPost = await getItemsFromFile(filePath, req.params.id)
-    // let newFileName = `${req.params.id}${extname(req.file.originalname)}`
-    // blogPosts.push(blogPost[0])
-    // await writeItems(filePath, blogPosts)
-    // await writeImage(`authors/${newFileName}`, req.file.buffer)
     const blogPost = await blogModel.findById(req.params.id)
-    // let newFileName = `${req.params.id}${extname(req.file.originalname)}`
     blogPost.author.avatar = req.file.path
     await blogModel.findByIdAndUpdate(req.params.id, blogPost,{runValidators: true, new:true})
     res.status(200).send()
@@ -48,18 +40,10 @@ async (req, res, next) => {
 fRouter.post("/:id/uploadCover",multer ({storage: cloudinaryStorage }).single("blogPostCover"),
 async (req, res, next) => {
   try {
- 
-    // let blogPosts = await getItemsExceptOneWithIdFromFile(filePath, req.params.id)
-    // let blogPost = await getItemsFromFile(filePath, req.params.id)
     const blogPost = await blogModel.findById(req.params.id)
-    // let newFileName = `${req.params.id}${extname(req.file.originalname)}`
     blogPost.cover = req.file.path
     await blogModel.findByIdAndUpdate(req.params.id, blogPost,{runValidators: true, new:true})
-    // blogPosts.push(blogPost)
-    // await writeItems(filePath, blogPosts)
-    //await writeImage(`blogPosts/${req.params.id}${extname(req.file.originalname)}`, req.file.buffer)
     res.status(204).send()
-    
   } catch (error) {
     console.log(error)
     next(error)

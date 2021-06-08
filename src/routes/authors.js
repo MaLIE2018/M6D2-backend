@@ -1,16 +1,19 @@
 import express from 'express';
 import { nanoid } from 'nanoid'
-import {getItems, writeItems, getFilePath} from '../../methods/fs-tools.js'
+import {getItems, writeItems, getFilePath} from '../methods/fs-tools.js'
 import {pipeline} from "stream"
 import { Transform } from 'json2csv';
-import {createFileStream} from "../../methods/csv.js"
+import {createFileStream} from "../methods/csv.js"
+import Authors from "../methods/schemas/authorSchema.js"
+
+
 const ARouter = express.Router();
 const filePath = getFilePath('authors.json')
-
 
 // ********************Requests******************************
 ARouter.get('/', async (req, res, next) => {
   try {
+    const authors = await Authors.find({})
     res.status(200).send(await getItems(filePath))
   } catch (error) {
     next(error)
@@ -44,32 +47,22 @@ ARouter.get('/:id', async (req, res) => {
 
 ARouter.post('/', async (req, res) => {
   try {
-    let author = req.body
-    let authors = await getItems(filePath)
-    if(!authors.some(a =>a.email === author.email)){
-      author = {...author, _id:nanoid(), createdAt: new Date()}
-      authors.push(author)
-      writeItems(filePath, authors)
-      res.status(201).send()
-    }else{
-      res.status(200).send("Sorry, the email already exists!")
-    }
+    const author = new Authors(req.body)
+    await author.save()
+    res.status(201).send({_id: author._id})
   } catch (error) {
-    
+    next(createError(500))
   }  
   
 })
 // Validator as Middleware here
-ARouter.put('/:id', async (req, res) => {
+ARouter.put('/:id', async (req, res, next) => {
   try {
-    const author = {...req.body, _id: id}
-    let authors = await getItems(filePath)
-    authors.filter(a => a._id !== req.params.id)
-    authors.push(author)
-    writeItems(filePath, authors)
-    res.status(201)
+    const author = new Authors(req.body)
+    await author.save()
+    res.status(201).send({_id: author._id})
   } catch (error) {
-    
+    next(createError(500)) 
   }
  
 })

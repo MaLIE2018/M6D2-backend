@@ -1,6 +1,6 @@
 import express from 'express';
-import ARouter from "./routes/authors/authors.js"
-import bpRouter from './routes/blogPosts/blogPosts.js';
+import ARouter from "./routes/authors.js"
+import bpRouter from './routes/blogPosts.js';
 import fRouter from './methods/fileHandler.js'
 import { notFoundHandler,badRequestHandler,catchAllHandler, forbiddenHandler } from './methods/errorHandlers.js';
 import {publicFolderPath2}  from "./methods/fs-tools.js"

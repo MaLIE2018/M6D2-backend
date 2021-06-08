@@ -1,27 +1,27 @@
 [
   {
-    "name": "John",
-    "surname": "Doe",
-    "_id": "sddf45",
+    "name": "Tobia",
+    "surname": "De Angelis",
     "email": "email@email.de",
     "dateOfBirth": "2020-01-05",
-    "avatar": "https://ui-avatars.com/api/?name=John+Doe"
+    "avatar": "https://striveschool.ghost.io/content/images/2020/12/tobia_mymoji.jpg",
+    "blogPosts": []
   },
   {
-    "name": "Johnd",
-    "surname": "Doe",
+    "name": "Bri",
+    "surname": "Cho",
+    "email": "email@email.de",
+    "dateOfBirth": "2020-01-05",
+    "avatar": "https://striveschool.ghost.io/content/images/2020/11/FBBRRZy5_400x400.jpg",
+    "blogPosts": []
+  },
+  {
+    "name": "Max",
+    "surname": "Liebsch",
     "email": "email@email.de",
     "dateOfBirth": "2020-01-05",
     "avatar": "https://ui-avatars.com/api/?name=John+Doe",
-    "_id": "eYA_1JHWFowQB7s3rwaso"
-  },
-  {
-    "name": "John",
-    "surname": "Doe",
-    "email": "email@email.de",
-    "dateOfBirth": "2020-01-05",
-    "avatar": "https://ui-avatars.com/api/?name=John+Doe",
-    "_id": "Tc33glTuzWlBbxDECRxKg"
+    "blogPosts": []
   },
   {
     "name": "John",
@@ -29,16 +29,14 @@
     "email": "email2@email.de",
     "dateOfBirth": "2020-01-05",
     "avatar": "https://ui-avatars.com/api/?name=John+Doe",
-    "_id": "jjPtEwBlk4HPzABlbvv8k",
-    "createdAt": "2021-05-19T09:03:12.587Z"
+    "blogPosts": []
   },
   {
-    "name": "John",
-    "surname": "Doe",
+    "name": "Michael",
+    "surname": "Johnson",
     "email": "email3@email.de",
     "dateOfBirth": "2020-01-05",
-    "avatar": "https://ui-avatars.com/api/?name=John+Doe",
-    "_id": "gdHvcEJQiUmWAmAsMpK-Q",
-    "createdAt": "2021-05-19T09:08:35.151Z"
+    "avatar": "https://ui-avatars.com/api/?name=Micheal+Johnson",
+    "blogPosts": []
   }
 ]

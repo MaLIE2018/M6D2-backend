@@ -1,13 +1,7 @@
 import mongoose from "mongoose"
 
-const {Schema, model, Model} = mongoose
+const {Schema, model} = mongoose
 
-const CommentSchema =  new Schema({
-  text: {type: String, default: ""},
-  user: {type: String, default: ""},
-  updatedAt: {type: Date},
-  createdAt: {type: Date}
-})
 const blogSchema = new Schema({
   category: {type: String, required: true},
   title: {type: String, required: true},
@@ -16,15 +10,17 @@ const blogSchema = new Schema({
     value: {type: Number, required: true},
     unit: {type: String, default: "minute"}
   },
-  author: {
-    name: {type: String, required: true},
-    avatar:{type: String, default: ""}
-  },
+  author: {type: Schema.Types.ObjectId, ref:"authors"},
   content: {type: String, required: true},
-  comments:{type:[CommentSchema] ,default:[]}
+  comments:[{ type: Schema.Types.ObjectId, ref:"comments"}]
 },
 {timestamps: true},
 )
+
+blogSchema.static("findBlogPostwithAuthorAndComments", async function(){
+  
+})
+
 
 
 export default model("blogposts", blogSchema)

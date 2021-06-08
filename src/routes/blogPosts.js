@@ -1,30 +1,27 @@
 import express from 'express';
 import {nanoid} from "nanoid"
-import { getItems, writeItems,getFilePath, tempPDFPath} from '../../methods/fs-tools.js';
+import { getItems, writeItems,getFilePath, tempPDFPath} from '../methods/fs-tools.js';
 import createError from 'http-errors'
-import { checkBlogPostSchema, checkValidationResult } from '../../methods/validations.js';
-import { sendEmail,sendEmailWAtt } from '../../methods/email.js';
-import { getPDF } from '../../methods/pdf.js';
+import { checkBlogPostSchema, checkValidationResult } from '../methods/validations.js';
+import { sendEmail,sendEmailWAtt } from '../methods/email.js';
+import { getPDF } from '../methods/pdf.js';
 import fs from "fs-extra"
 import mongoose from "mongoose"
-import blogModel from "../../methods/schemas/schema.js"
+import blogModel from "../methods/schemas/blogPostSchema.js"
 const bpRouter = express.Router();
 import {v2 as cloudinary} from "cloudinary"
 const filePath = getFilePath("blogPosts.json")
 import {basename,extname} from "path"
-
+import q2m from "query-to-mongo"
 
 bpRouter.get("/", async (req, res, next) =>{  
       try { 
-      // let blogPosts = await getItems(filePath)
-      // if(req.query.title){
-      //   const filteredPosts = BlogPosts.filter(post => 
-      //     post.hasOwnProperty("title") && post.title.toLowerCase()
-      //     .includes(req.query.title.toLowerCase()))
-      //   res.status(200).send(filteredPosts)
-      // }
-      const blogPosts = await blogModel.find()
-      res.status(200).send(blogPosts)
+      const query = q2m(req.query)
+      const total = await blogModel.countDocuments()
+      const {skip,limit} = query.options;
+      const pages = Math.ceil(total / limit);
+      const blogPosts = await blogModel.find({},{}, query.options).populate({path:"author","select":"name surname avatar"}).populate("comments")
+      res.status(200).send({Links:{Links:query.links("/blogposts",total), total:total}, posts: blogPosts,pages})
     } catch (err) {
       console.log(err)
       next(err)
@@ -32,11 +29,12 @@ bpRouter.get("/", async (req, res, next) =>{
 })
 bpRouter.get("/:id", async ( req, res, next) =>{
   try {
+    
     // let blogPosts = await getItems(filePath)
     // let reqPost = blogPosts.find(a => a._id === req.params.id)
-    const reqPost = await blogModel.findById(req.params.id)
-    if(reqPost){
-      res.status(200).send(reqPost)
+    const blogPost = await blogModel.findOne({_id:req.params.id}).populate({path:"author",select:"name avatar surname"})
+    if(blogPost){
+      res.status(200).send(blogPost)
     } else {
       next(createError(404, {message:`The blogPost with ${req.params.id} is not found`}))
     }
